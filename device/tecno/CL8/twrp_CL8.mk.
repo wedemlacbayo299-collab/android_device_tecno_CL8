@@ -1,0 +1,8 @@
+$(call inherit-product, $(SRC_TARGET_DIR)/product/core_64bit.mk)
+$(call inherit-product, $(SRC_TARGET_DIR)/product/full_base_telephony.mk)
+
+PRODUCT_DEVICE := CL8
+PRODUCT_NAME := twrp_CL8
+PRODUCT_BRAND := Tecno
+PRODUCT_MODEL := Camon 30 Pro 5G
+PRODUCT_MANUFACTURER := tecno
