@@ -1,4 +1,5 @@
 name: TWRP Build - Tecno CL8
+
 on:
   workflow_dispatch:
 
@@ -6,19 +7,33 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Source
+      - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Sync TWRP Source
+      - name: Cleanup Disk Space
+        run: |
+          sudo rm -rf /usr/share/dotnet
+          sudo rm -rf /opt/ghc
+          sudo rm -rf "/usr/local/share/boost"
+          sudo rm -rf "$AGENT_TOOLSDIRECTORY"
+
+      - name: Install Repo Tool
+        run: |
+          mkdir -p ~/bin
+          curl https://storage.googleapis.com/git-repo-downloads/repo > ~/bin/repo
+          chmod a+x ~/bin/repo
+          sudo ln -sf ~/bin/repo /usr/bin/repo
+
+      - name: Sync Minimal TWRP
         run: |
           mkdir ~/twrp && cd ~/twrp
-          repo init --depth=1 -u https://github.com/minimal-manifest-twrp/platform_manifest_twrp_aosp.git -b twrp-14.1
-          repo sync -j$(nproc --all)
+          repo init --depth=1 -u https://github.com/minimal-manifest-twrp/platform_manifest_twrp_aosp.git -b twrp-12.1
+          repo sync -j$(nproc --all) --force-sync --no-tags --no-clone-bundle
 
       - name: Build Recovery Image
         run: |
           cd ~/twrp
-          ln -s $GITHUB_WORKSPACE device/tecno/CL8
+          cp -r $GITHUB_WORKSPACE/. device/tecno/CL8/
           export ALLOW_MISSING_DEPENDENCIES=true
           source build/envsetup.sh
           lunch twrp_CL8-eng
@@ -29,4 +44,3 @@ jobs:
         with:
           name: TWRP-Tecno-CL8
           path: ~/twrp/out/target/product/CL8/*.img
-          
