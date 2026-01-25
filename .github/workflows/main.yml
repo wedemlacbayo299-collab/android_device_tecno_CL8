@@ -4,7 +4,8 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-20.04  # Mas stable para sa luma/minimal repo tools
+    runs-on: ubuntu-20.04  
+
     steps:
       - name: Checkout Source
         uses: actions/checkout@v4
